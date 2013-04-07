@@ -1,9 +1,9 @@
  ;
  ; This file is part of Badadroid project.
  ;
- ; Copyright (C) 2012 Rebellos, mijoma, b_kubica
+ ; Copyright (C) 2013 B_kubica,  Mijoma,  ihavenick, Rebellos
  ;
- ;
+ ; 
  ; Badadroid is free software: you can redistribute it and/or modify
  ; it under the terms of the GNU General Public License as published by
  ; the Free Software Foundation, either version 3 of the License, or
@@ -20,7 +20,6 @@
  ;
  
 include 'inc/settings.inc'		; user dependend settings
-
 
 START
 
@@ -44,8 +43,9 @@ bootkernel:	      ;0x43201000 on 2.0 new release ;0x43801000 on 8530JPKA1
    CMP	R0, 0
    BNE	code_loaded
 
-   BL	 __PfsNandInit
-   BL	 __PfsMassInit
+   BL	  __PfsNandInit
+   BL	  __PfsMassInit
+   BL	   MemoryCardMount
 
 
 
@@ -59,33 +59,56 @@ bootkernel:	      ;0x43201000 on 2.0 new release ;0x43801000 on 8530JPKA1
    LDR	 R0, [R0]
    BL	 hex_debugprint
 
-   ldr	 r0, [s_loadkernel_a]
-   BL	 debug_print
+ ;  ldr   r0, [s_loadkernel_a]
+ ;  BL    debug_print
    LDR	 R2, [kernel_size_a]
    LDR	 R2, [R2]
    LDR	 R1, [kernel_buf]
    LDR	 R0, [s_kernel_path_a]
    BL	 loadfile
-   ldr	 r0, [s_done_a]
-   BL	 debug_print
+  ; ldr   r0, [s_done_a]
+  ; BL    debug_print
 
 
 
 code_loaded:
-   ldr	 r0, [s_mmuoff_a]
+  ; ldr   r0, [s_mmuoff_a]
+  ; BL    debug_print
+   LDR	 R0, [s_10_a]
    BL	 debug_print
+   LDR	 R0, [s_1_a]
+   BL	 debug_print
+   LDR	 R0, [s_2_a]
+   BL	 debug_print
+   LDR	 R0, [s_3_a]
+   BL	 debug_print
+   LDR	 R0, [s_4_a]
+   BL	 debug_print
+   LDR	 R0, [s_5_a]
+   BL	 debug_print
+   LDR	 R0, [s_6_a]
+   BL	 debug_print
+   LDR	 R0, [s_7_a]
+   BL	 debug_print
+   LDR	 R0, [s_8_a]
+   BL	 debug_print
+   LDR	 R0, [s_9_a]
+   BL	 debug_print
+
+
+
 
    MCR	 p15, 0, R8,c1,c0 ;turn off MMUCache with previous gained MMU control reg
    BL	 _CoDisableMmu
-   ldr	 r0, [s_done_a]
-   BL	 debug_print
- ;  BL    configure_ram
+  ; ldr   r0, [s_done_a]
+  ; BL    debug_print
+  ; BL    configure_ram
 
-   ldr	 r0, [s_modemboot_a]
-   BL	 debug_print
+  ; ldr   r0, [s_modemboot_a]
+  ; BL    debug_print
    BL	 DRV_Modem_BootingStart
-   ldr	 r0, [s_done_a]
-   BL	 debug_print
+  ; ldr   r0, [s_done_a]
+  ; BL    debug_print
 
    LDR	 R0, [ATAG_ptr]
    MOV	 R1, 0x00
@@ -159,20 +182,20 @@ code_loaded:
    ADD	 R2, R2, 4
    MOV	 R0, 0	 ;ATAG_NONE
    STR	 R0, [R2] ;thats the whole ATAG struct
-   ldr	 r0, [s_done_a]
-   BL	 debug_print
+  ; ldr   r0, [s_done_a]
+  ; BL    debug_print
 
-   ldr	 r1, [kernel_start_a]
-   ldr	 r0, [s_kernelreloc_a]
-   BL	 debug_print
+  ; ldr   r1, [kernel_start_a]
+  ; ldr   r0, [s_kernelreloc_a]
+  ; BL    debug_print
 
    BL	 relockernel
-   ldr	 r0, [s_done_a]
-   BL	 debug_print
+  ; ldr   r0, [s_done_a]
+  ; BL    debug_print
 
    LDR	 R0, [SYSCON_NORMAL_CFG]
    LDR	 R1, [R0]
-;   BIC   R1, R1, 0xBE ;turn off all power-managed S5PC110 blocks, this will reset LCD controller :)
+  ; BIC   R1, R1, 0xBE ;turn off all power-managed S5PC110 blocks, this will reset LCD controller :)
    STR	 R1, [R0]
    MOV	 R1, 0xFFFFFFFF
    STR	 R1, [R0]    ;POWAH ON EVRYTHINKS (clock registers in all modules must be available for kernel)
@@ -186,12 +209,12 @@ code_loaded:
    BL	 _System_DisableIRQ
    BL	 _System_DisableFIQ
 
-   LDR	 R0, [s_bootingkernel_a]
-   BL	 debug_print
+
+
 
    LDR	 R1, [kernel_start_a]
-   LDR	 R0, [s_jumpingout_a]
-   BL	 debug_print
+  ; LDR   R0, [s_jumpingout_a]
+  ; BL    debug_print
    MOV	 R0, 0	   ;must be 0
    LDR	 R1, [mach_id] ;load 8500 or 8530, depending on the model which for FOTA is compiled
    LDR	 R2, [ATAG_ptr]
@@ -199,8 +222,8 @@ code_loaded:
    LDR	 R5, [kernel_start_a]
    BLX	 R5
 
-   ldr	 r0, [s_kernelreturn_a]
-   BL	 debug_print
+  ; ldr   r0, [s_kernelreturn_a]
+  ; BL    debug_print
    
 ;   BL    dloadmode
 loop_forever:
@@ -266,25 +289,47 @@ DEFAULT_VARIABLES
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;; strings at the end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;; add custom strings addresses below (for using by LDR op)
    s_kernel_path_a	  dw s_kernel_path
-   s_loadkernel_a	  dw s_loadkernel
-   s_bootingkernel_a	  dw s_bootingkernel
-   s_jumpingout_a	  dw s_jumpingout
-   s_kernelreloc_a	  dw s_kernelreloc
-   s_mmuoff_a		  dw s_mmuoff
-   s_modemboot_a	  dw s_modemboot
-   s_kernelreturn_a	  dw s_kernelreturn
+  ; s_loadkernel_a         dw s_loadkernel
+ ;  s_bootingkernel_a      dw s_bootingkernel
+   s_1_a      dw s_1
+   s_2_a      dw s_2
+   s_3_a      dw s_3
+   s_4_a      dw s_4
+   s_5_a      dw s_5
+   s_6_a      dw s_6
+   s_7_a      dw s_7
+   s_8_a      dw s_8
+   s_9_a      dw s_9
+   s_10_a      dw s_10
+ ;  s_jumpingout_a         dw s_jumpingout
+ ;  s_kernelreloc_a        dw s_kernelreloc
+ ;  s_mmuoff_a             dw s_mmuoff
+ ;  s_modemboot_a          dw s_modemboot
+ ;  s_kernelreturn_a       dw s_kernelreturn
 
 
 DEFAULT_STRINGS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;; ;add custom strings below
-   s_kernel_path	  du '/g/zImage',0
-   s_kernelreloc	  db ' Reloc kernel to 0x%X',0
-   s_loadkernel 	  db ' Loading kernel image to buf',0
-   s_bootingkernel	  db ' Booting kernel...',0
-   s_jumpingout 	  db ' Jumpout to 0x%X',0
-   s_mmuoff		  db ' Turning off MMU...',0
-   s_modemboot		  db ' Booting up modem...',0
-   s_kernelreturn	  db ' WTF KERNEL RETURNED',0
+   s_kernel_path	  du '/e/zImage',0
+   s_1	      db ' __      __                   ',0
+   s_2	      db '/  \    /  \____ ___  __ ____  ',0
+   s_3	      db '\   \__/   |__  \\  \/ // __ \ ',0
+   s_4	      db ' \        / / __ \\   /\  ___/ ',0
+   s_5	      db '  \__/\__/ (_____/ \_/  \_____>',0
+   s_6	      db '                               ',0
+   s_7	      db '  ,(   ,(   ,(   ,(   ,(   ,(  ',0
+   s_8	      db '`-   `-   `-   `-   `-   `-    ',0
+   s_9	      db '------------------------------',0
+   s_10        db '------------------------------',0
+ ;  s_kernelreloc          db ' Reloc kernel to 0x%X',0
+  ; s_loadkernel           db ' Loading kernel image to buf',0
+  ; s_bootingkernel        db ' Booting kernel...',0
+
+
+ ;  s_jumpingout           db ' Jumpout to 0x%X',0
+ ;  s_mmuoff               db ' Turning off MMU...',0
+ ;  s_modemboot            db ' Booting up modem...',0
+ ;  s_kernelreturn         db ' WTF KERNEL RETURNED',0
  
 FUNCTIONS
 

@@ -113,10 +113,16 @@ dloadmode:
 	ldr	r0, [s_downloadmode_a]
 	bl	debug_print
 
-	mov	r1, CHARGING_CONTROL
+       ; mov     r1, CHARGING_CONTROL
 	mov	r0, 2
-	bl	maxim_charging_control
+       ; bl      maxim_charging_control
 	bl	DloadMain
+
+speedmode:
+       ldr	r0, [s_speed_a]
+       bl	debug_print
+       mov	r1, SPEEDBOOT
+       B     bootkernel
 
 ;int rebell_strlen(char* str)
 rebell_strlen:
@@ -305,12 +311,12 @@ rebell_memcpy:
 	MOV	R2, R1
 	MOV	R1, R0
 	LDR	R0, [s_memcpy1_a]
-	BL	debug_print
+       ; BL      debug_print
 
 	MOV	R4, R1
 	MOV	R1, R3
 	LDR	R0, [s_memcpy2_a]
-	BL	debug_print
+       ; BL      debug_print
 
 	MOV	R0, R4
 	MOV	R1, R2
@@ -369,7 +375,7 @@ enable_fota_output:
 	MOV	R0, 0x1
 	bl	disp_dimming_backlight
 	ldr	r0, [s_fotaoutput_a]
-	bl	debug_print
+       ; bl      debug_print
 	LDMFD	SP!, {R0-R1,PC\}
 
 output_switch_a dw output_switch
@@ -381,7 +387,7 @@ enable_uart_output:
 	MOV	r0, 2
 	STR	R0, [r1]
 	ldr	r0, [s_uartoutput_a]
-	bl	debug_print
+       ; bl      debug_print
 	LDMFD	SP!, {R0-R1,PC\}
 
 ; void enable_output ( )
@@ -397,7 +403,7 @@ end if ; DEFAULT_OUTPUT_UART
 disable_output:
 	STMFD	SP!, {R0-R1,LR\}
 	ADR	r0, disable_out
-	bl	debug_print
+       ; bl      debug_print
 	LDR	r1, [output_switch_a]
 	MOV	r0, 0
 	STR	R0, [r1]
@@ -410,7 +416,7 @@ int_debugprint:
 	STMFD	SP!, {R0-R1,LR\}
 	mov	r1, r0
 	ldr	r0, [s_debug_fmt_int_a]
-	bl	debug_print
+       ; bl      debug_print
 	LDMFD	SP!, {R0-R1,PC\}
 
 ;void hex_debugprint(int num)
@@ -418,7 +424,7 @@ hex_debugprint:
 	STMFD	SP!, {R0-R1,LR\}
 	mov	r1, r0
 	ldr	r0, [s_debug_fmt_hex_a]
-	bl	debug_print
+      ;  bl      debug_print
 	LDMFD	SP!, {R0-R1,PC\}
 
 
@@ -463,7 +469,7 @@ listdir_convertloop:
 
 	mov	r1, r0
 	ldr	r0, [s_fmt_a]
-	bl	debug_print
+      ;  bl      debug_print
 
 
 	ldr	r0, [v_delay_100ms]  ;pause to make it easy readable
@@ -477,7 +483,7 @@ listdir_end:
 	b	listdir_ret
 listdir_notfound:
 	ldr	r0, [s_notfound_a]
-	bl	debug_print
+      ;  bl      debug_print
 	mov	r0, 0
 	b	listdir_ret
 listdir_ret:
@@ -495,7 +501,7 @@ memdump:
 	mov	r2, r6
 	mov	r1, r5
 	ldr	r0, [s_memdump_a]
-	bl	debug_print
+      ;  bl      debug_print
 	mov	r1, 0xC
 	mov	r0, R4
 	bl	tfs4_open
@@ -510,7 +516,7 @@ memdump:
 
 	mov	r1, r0
 	ldr	r0, [s_written_a]
-	bl	debug_print
+      ;  bl      debug_print
 	cmp	r1, -1
 	beq	memdump_error
 
@@ -518,13 +524,13 @@ memdump:
 	bl	tfs4_close
 
 	ldr	r0, [s_done_a]
-	bl	debug_print
+      ;  bl      debug_print
 	b	memdump_ret
 memdump_error:
 	BL	tfs4_get_errno
 	mov	r1, r0
 	ldr	r0, [s_dumpmem_error_a]
-	bl	debug_print
+      ;  bl      debug_print
 	mov	r0, 0
 memdump_ret:
 	LDMFD	SP!, {R1-R10,PC\}
@@ -542,7 +548,7 @@ loadfile:
 
 	mov	r1, r4
 	ldr	r0, [s_fileload_a]
-	bl	debug_print
+       ; bl      debug_print
 
 	mov	r0, r6
 
@@ -565,7 +571,7 @@ loadfile:
 	
 	mov	r1, r0
 	ldr	r0, [s_filesize_a]
-	bl	debug_print
+       ; bl      debug_print
 	
 	mov	r0, r6
 	bl	tfs4_close
@@ -837,7 +843,7 @@ SUB   SP, 128
 	MOV	R0, 0
 	STRB	R0, [R3]
 	MOV	R0, SP
-	BL	debug_print
+       ; BL      debug_print
 
 ADD   SP, 128
 LDMFD SP!, {R3-R5, PC\}

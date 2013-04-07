@@ -130,13 +130,13 @@ if defined FOTA_INVERT_BACKGROUND
 
 end if ; FOTA_INVERT_BACKGROUND
 
-	ldr		r0, [_key2]
-	ldrb		r0, [r0, 0]		; Menu/Home key
-	cmp		r0, 1
-	beq		check_vol
+       ; ldr             r0, [_key2]
+       ; ldrb            r0, [r0, 0]             ; Menu/Home key
+       ; cmp             r0, 1
+       ; beq             check_vol
 
 	ldr		r0, [_key2]
-	ldrb		r0, [r0, 7]		; volup key
+	ldrb		r0, [r0, 0]		; Menu Key
 	cmp		r0, 0
 	ldrne		r0, [s_atagcmdlineRM_a] ; quick and dirty address copy...
 	ldrne		r1, [s_atagcmdline_aa]
@@ -147,11 +147,11 @@ end if ; FOTA_INVERT_BACKGROUND
 	ldr		r0, [_key2]
 	ldrb		r0, [r0, 2]
 	cmp		r0, 0
-	beq		return_to_bl		; not menu/home, not vol-up, and not call-key
+	beq		fota_run		    ; not menu/home, not vol-up, and not call-key   - android
 
 
 
-	b		fota_run		; call key - run fota
+	b		fota_dload_mode 	       ; call key - run bada
 
 check_vol:
 	ldr		r0, [_key2]
