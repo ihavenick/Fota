@@ -48,6 +48,6 @@ include 'inc/S8500XXKL5.inc'
 include 'inc/macros.inc'
 include 'inc/vars.inc'
 include 'inc/functions.inc'
-include 'inc/bada_term.inc'
+;include 'inc/bada_term.inc'
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 'settings.inc' example end
